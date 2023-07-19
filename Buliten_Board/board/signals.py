@@ -7,7 +7,7 @@ from .models import Reply
 
 # Обработчик сигнала при создании нового отклика
 @receiver(post_save, sender=Reply)
-def notify_listing_author(instance, created, **kwargs):
+def notify_new_reply(instance, created, **kwargs):
     if created:
         email = instance.listing.author.email
         subject = 'Новый отклик на объявление'
@@ -29,7 +29,7 @@ def notify_listing_author(instance, created, **kwargs):
 
 # Обработчик сигнала при изменении статуса отклика:Отправка email-уведомления пользователю, чей отклик был принят
 @receiver(post_save, sender=Reply)
-def notify_reply_status(instance, **kwargs):
+def notify_reply_accept(instance, **kwargs):
     email = instance.author.email
     if instance.status:
 
@@ -52,7 +52,7 @@ def notify_reply_status(instance, **kwargs):
 
 # Обработчик сигнала при отклонении и удалении отклика
 @receiver(post_delete, sender=Reply)
-def notify_reject(instance, **kwargs):
+def notify_reply_reject(instance, **kwargs):
     email = instance.author.email
     subject = 'Отклит отклонен'
     text_content = (
